@@ -1,0 +1,73 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        
+        "appservplanname": {
+            "type": "string"
+        },
+        
+        "appservname": {
+            "type": "string"
+        },
+
+        "location": {
+            "type": "string"
+            
+        },
+
+        "sku": {
+            "type": "string"
+            
+        },
+
+        "linuxFxVersion": {
+            "type": "string"
+                      
+        }
+    },
+
+    
+
+    "resources": [
+
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2021-03-01",
+            "location": "[parameters('location')]",
+            "name": "[parameters('appservplanname')]",
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "kind": "linux",
+            "properties": {
+                "reserved": true
+            }
+
+        },
+
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2021-03-01",
+            "location": "[parameters('location')]",
+            "name": "[parameters('appservname')]",
+            "properties": {
+                "httpsOnly": true,
+                "serverFarmId": "[parameters('appservplanname')]",
+                "siteConfig":{
+                    "linuxFxVersion": "[parameters('linuxFxVersion')]"
+            }
+                   
+             },
+            
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            
+            "dependsOn": [
+                "[parameters('appservplanname')]"
+    ]
+        }
+    ]
+
+}
