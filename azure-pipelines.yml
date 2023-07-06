@@ -1,0 +1,19 @@
+pool:
+  vmImage: ubuntu-latest
+
+# file: azure-pipelines.yml
+trigger: none
+pr: none
+
+resources:
+  webhooks:
+    - webhook: webhook-github         
+      connection: webhook-serviceconnection    
+
+steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host ${{ parameters.webhook-github.repositoryName}} ### JSON payload data is available in the form of ${{ parameters.<WebhookAlias>.<JSONPath>}}
+      Write-Host ${{ parameters.webhook-github.component.group}}
